@@ -1058,6 +1058,22 @@ class Roaring64Map {
     }
 
     /**
+     * Iterate over the bitmap elements in order(start from the smallest one)
+     * and sets/unsets (1/0) corresponding elements of `ptr` array.
+     */
+    void set(char8_t *ptr) const {
+        for (const auto &map_entry : roarings) {
+            roaring_set64(&map_entry.second.roaring, map_entry.first, ptr);
+        }
+    }
+
+    void unset(char8_t *ptr) const {
+        for (const auto &map_entry : roarings) {
+            roaring_unset64(&map_entry.second.roaring, map_entry.first, ptr);
+        }
+    }
+
+    /**
      * Selects the value at index 'rank' in the bitmap, where the smallest value
      * is at index 0. If 'rank' < cardinality(), returns true with *element set
      * to the element of the specified rank. Otherwise, returns false and the

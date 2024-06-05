@@ -1088,6 +1088,32 @@ bool bitset_container_iterate64(const bitset_container_t *cont, uint32_t base, r
   return true;
 }
 
+void bitset_container_set64(const bitset_container_t *cont, uint32_t base, uint32_t high_bits, char8_t *ptr) {
+  for (int32_t i = 0; i < BITSET_CONTAINER_SIZE_IN_WORDS; ++i ) {
+    uint64_t w = cont->words[i];
+    while (w != 0) {
+      uint64_t t = w & (~w + 1);
+      int r = __builtin_ctzll(w);
+      ptr[(((uint64_t)high_bits) << 32) | (uint64_t)(r + base)] = true;
+      w ^= t;
+    }
+    base += 64;
+  }
+}
+
+void bitset_container_unset64(const bitset_container_t *cont, uint32_t base, uint32_t high_bits, char8_t *ptr) {
+  for (int32_t i = 0; i < BITSET_CONTAINER_SIZE_IN_WORDS; ++i ) {
+    uint64_t w = cont->words[i];
+    while (w != 0) {
+      uint64_t t = w & (~w + 1);
+      int r = __builtin_ctzll(w);
+      ptr[(((uint64_t)high_bits) << 32) | (uint64_t)(r + base)] = false;
+      w ^= t;
+    }
+    base += 64;
+  }
+}
+
 #if CROARING_IS_X64
 #if CROARING_COMPILER_SUPPORTS_AVX512
 CROARING_TARGET_AVX512

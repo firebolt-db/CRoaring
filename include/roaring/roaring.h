@@ -868,6 +868,10 @@ bool roaring_iterate(const roaring_bitmap_t *r, roaring_iterator iterator,
 bool roaring_iterate64(const roaring_bitmap_t *r, roaring_iterator64 iterator,
                        uint64_t high_bits, void *ptr);
 
+void roaring_set64(const roaring_bitmap_t *r, uint32_t high_bits, char8_t *ptr);
+
+void roaring_unset64(const roaring_bitmap_t *r, uint32_t high_bits, char8_t *ptr);
+
 /**
  * Return true if the two bitmaps contain the same elements.
  */

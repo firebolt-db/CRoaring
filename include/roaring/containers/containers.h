@@ -1989,6 +1989,49 @@ static inline bool container_iterate64(const container_t *c, uint8_t type,
     return false;
 }
 
+static inline void container_set64(const container_t *c, uint8_t type,
+                                   uint32_t base, uint32_t high_bits,
+                                   char8_t *ptr) {
+    c = container_unwrap_shared(c, &type);
+    switch (type) {
+        case BITSET_CONTAINER_TYPE:
+            return bitset_container_set64(const_CAST_bitset(c), base, high_bits,
+                                          ptr);
+        case ARRAY_CONTAINER_TYPE:
+            return array_container_set64(const_CAST_array(c), base, high_bits,
+                                         ptr);
+        case RUN_CONTAINER_TYPE:
+            return run_container_set64(const_CAST_run(c), base, high_bits, ptr);
+        default:
+            assert(false);
+            roaring_unreachable;
+    }
+    assert(false);
+    roaring_unreachable;
+}
+
+static inline void container_unset64(const container_t *c, uint8_t type,
+                                     uint32_t base, uint32_t high_bits,
+                                     char8_t *ptr) {
+    c = container_unwrap_shared(c, &type);
+    switch (type) {
+        case BITSET_CONTAINER_TYPE:
+            return bitset_container_unset64(const_CAST_bitset(c), base,
+                                            high_bits, ptr);
+        case ARRAY_CONTAINER_TYPE:
+            return array_container_unset64(const_CAST_array(c), base, high_bits,
+                                           ptr);
+        case RUN_CONTAINER_TYPE:
+            return run_container_unset64(const_CAST_run(c), base, high_bits,
+                                         ptr);
+        default:
+            assert(false);
+            roaring_unreachable;
+    }
+    assert(false);
+    roaring_unreachable;
+}
+
 static inline container_t *container_not(const container_t *c, uint8_t type,
                                          uint8_t *result_type) {
     c = container_unwrap_shared(c, &type);

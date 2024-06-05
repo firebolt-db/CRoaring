@@ -562,6 +562,18 @@ bool array_container_iterate64(const array_container_t *cont, uint32_t base,
     return true;
 }
 
+void array_container_set64(const array_container_t *cont, uint32_t base,
+                           uint32_t high_bits, char8_t *ptr) {
+    for (int i = 0; i < cont->cardinality; i++)
+        ptr[(((uint64_t)high_bits) << 32) | (uint64_t)(cont->array[i] + base)] = true;
+}
+
+void array_container_unset64(const array_container_t *cont, uint32_t base,
+                             uint32_t high_bits, char8_t *ptr) {
+    for (int i = 0; i < cont->cardinality; i++)
+        ptr[(((uint64_t)high_bits) << 32) | (uint64_t)(cont->array[i] + base)] = false;
+}
+
 #ifdef __cplusplus
 }
 }

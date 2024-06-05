@@ -1672,6 +1672,24 @@ bool roaring_iterate64(const roaring_bitmap_t *r, roaring_iterator64 iterator,
     return true;
 }
 
+void roaring_set64(const roaring_bitmap_t *r, uint32_t high_bits,
+                   char8_t *ptr) {
+    const roaring_array_t *ra = &r->high_low_container;
+
+    for (int i = 0; i < ra->size; ++i)
+        container_set64(ra->containers[i], ra->typecodes[i],
+                        ((uint32_t)ra->keys[i]) << 16, high_bits, ptr);
+}
+
+void roaring_unset64(const roaring_bitmap_t *r, uint32_t high_bits,
+                     char8_t *ptr) {
+    const roaring_array_t *ra = &r->high_low_container;
+
+    for (int i = 0; i < ra->size; ++i)
+        container_unset64(ra->containers[i], ra->typecodes[i],
+                          ((uint32_t)ra->keys[i]) << 16, high_bits, ptr);
+}
+
 /****
  * begin roaring_uint32_iterator_t
  *****/

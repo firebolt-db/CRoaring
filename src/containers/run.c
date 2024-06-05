@@ -34,7 +34,7 @@ extern inline bool run_container_nonzero_cardinality(const run_container_t *rc);
 extern inline int32_t run_container_serialized_size_in_bytes(int32_t num_runs);
 extern inline run_container_t *run_container_create_range(uint32_t start,
                                                           uint32_t stop);
-extern inline int run_container_cardinality(const run_container_t *run);
+
 
 bool run_container_add(run_container_t *run, uint16_t pos) {
     int32_t index = interleavedBinarySearch(run->runs, run->n_runs, pos);
@@ -762,6 +762,28 @@ bool run_container_iterate64(const run_container_t *cont, uint32_t base,
                 return false;
     }
     return true;
+}
+
+void run_container_set64(const run_container_t *cont, uint32_t base,
+                             uint32_t high_bits, char8_t *ptr) {
+    for (int i = 0; i < cont->n_runs; ++i) {
+        uint32_t run_start = base + cont->runs[i].value;
+        uint16_t le = cont->runs[i].length;
+
+        for (int j = 0; j <= le; ++j)
+            ptr[(((uint64_t)high_bits) << 32) | (uint64_t)(run_start + j)] = true;
+    }
+}
+
+void run_container_unset64(const run_container_t *cont, uint32_t base,
+                             uint32_t high_bits, char8_t *ptr) {
+    for (int i = 0; i < cont->n_runs; ++i) {
+        uint32_t run_start = base + cont->runs[i].value;
+        uint16_t le = cont->runs[i].length;
+
+        for (int j = 0; j <= le; ++j)
+            ptr[(((uint64_t)high_bits) << 32) | (uint64_t)(run_start + j)] = false;
+    }
 }
 
 bool run_container_is_subset(const run_container_t *container1,

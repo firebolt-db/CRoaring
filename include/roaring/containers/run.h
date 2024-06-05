@@ -456,6 +456,14 @@ bool run_container_iterate64(const run_container_t *cont, uint32_t base,
                              roaring_iterator64 iterator, uint64_t high_bits,
                              void *ptr);
 
+#ifndef __cpp_char8_t
+using char8_t = unsigned char;
+#endif
+
+void run_container_set64(const run_container_t *cont, uint32_t base,
+                         uint32_t high_bits, char8_t *ptr);
+void run_container_unset64(const run_container_t *cont, uint32_t base,
+                           uint32_t high_bits, char8_t *ptr);
 /**
  * Writes the underlying array to buf, outputs how many bytes were written.
  * This is meant to be byte-by-byte compatible with the Java and Go versions of

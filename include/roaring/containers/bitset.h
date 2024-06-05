@@ -430,6 +430,11 @@ bool bitset_container_iterate64(const bitset_container_t *cont, uint32_t base,
                                 roaring_iterator64 iterator, uint64_t high_bits,
                                 void *ptr);
 
+void bitset_container_set64(const bitset_container_t *cont, uint32_t base,
+                            uint32_t high_bits, char8_t *ptr);
+void bitset_container_unset64(const bitset_container_t *cont, uint32_t base,
+                              uint32_t high_bits, char8_t *ptr);
+
 /**
  * Writes the underlying array to buf, outputs how many bytes were written.
  * This is meant to be byte-by-byte compatible with the Java and Go versions of
