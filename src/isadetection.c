@@ -278,6 +278,16 @@ static inline uint32_t croaring_detect_supported_architectures(void) {
 }
 #endif  // CROARING_C_ATOMIC
 
+// The cached result of croaring_hardware_support(), which threads calling it
+// for the first time all write.
+#if CROARING_ATOMIC_IMPL == CROARING_ATOMIC_IMPL_CPP
+typedef std::atomic<int> croaring_atomic_int;
+#elif CROARING_ATOMIC_IMPL == CROARING_ATOMIC_IMPL_C
+typedef _Atomic int croaring_atomic_int;
+#else
+typedef int croaring_atomic_int;
+#endif
+
 #ifdef ROARING_DISABLE_AVX
 
 int croaring_hardware_support(void) { return 0; }
@@ -291,11 +301,7 @@ int croaring_hardware_support(void) {
 #elif defined(__AVX2__)
 
 int croaring_hardware_support(void) {
-    static
-#if CROARING_ATOMIC_IMPL == CROARING_ATOMIC_IMPL_C
-        _Atomic
-#endif
-        int support = 0xFFFFFFF;
+    static croaring_atomic_int support = 0xFFFFFFF;
     if (support == 0xFFFFFFF) {
         bool avx512_support = false;
 #if CROARING_COMPILER_SUPPORTS_AVX512
@@ -311,11 +317,7 @@ int croaring_hardware_support(void) {
 #else
 
 int croaring_hardware_support(void) {
-    static
-#if CROARING_ATOMIC_IMPL == CROARING_ATOMIC_IMPL_C
-        _Atomic
-#endif
-        int support = 0xFFFFFFF;
+    static croaring_atomic_int support = 0xFFFFFFF;
     if (support == 0xFFFFFFF) {
         bool has_avx2 = (croaring_detect_supported_architectures() &
                          CROARING_AVX2) == CROARING_AVX2;
